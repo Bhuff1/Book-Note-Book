@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Book Note Book</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../static/css/bnb_login_styles.css" th:href="@{css/bnb_login_styles.css}">
+</head>
+<body>
+
+<div class="container">
+<h2>Book Note Book</h2>
+  <label class="invalid-login" th:if="${il.isValid}">Invalid login attempt</label>
+  <form th:action="@{/login}" th:object="${loginform}" method="post">
+    <div class="imgcontainer">
+      <img src="../static/images/login_image.jpg" th:src="@{images/login_image.jpg}" alt="bnb" class="avatar">
+    </div>
+	<div class="form-group">
+      <label for="uname"><b>Username</b></label>
+      <input type="text" th:field="*{login}" class="form-control" placeholder="Enter Username" name="uname" required>
+	</div>
+	<div class="form-group">
+      <label for="psw"><b>Password</b></label>
+      <input type="password" th:field="*{password}" class="form-control" placeholder="Enter Password" name="psw" required>
+    </div>    
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>
+  </div>
+
+</body>
+</html>

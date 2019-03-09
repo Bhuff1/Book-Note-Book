@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Book Note Book</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../static/css/bnb_index_styles.css" th:href="@{css/bnb_index_styles.css}"> 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    $(document).on('click', '#editReadBook', function(){
+      $("#editReadBookModal").modal('show');
+      $("#txttitle").val($(this).closest('tr').children()[0].textContent);
+      $("#txtauthor").val($(this).closest('tr').children()[1].textContent);
+      $("#txtgenre").val($(this).closest('tr').children()[3].textContent);
+      $("#txtisbn").val($(this).closest('tr').children()[4].textContent);
+      $("#txtreview").val($(this).closest('tr').children()[6].textContent);
+      $("#txtdateread").val($(this).closest('tr').children()[2].textContent);
+      
+      var rdRating = $(this).closest('tr').children()[5].textContent;
+      
+      switch(rdRating){
+      	case "1":
+      		$("#rd1").attr('checked',true);
+      		break;
+      	case "2":
+      		$("#rd2").attr('checked',true);
+      		break;
+      	case "3":
+      		$("#rd3").attr('checked',true);
+      		break;	
+      	case "4":
+      		$("#rd4").attr('checked',true);
+      		break;
+      	case "5":
+      		$("#rd5").attr('checked',true);
+      		break;
+      
+      }
+     
+     });
+  </script>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="index">Book Note Book</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="index">Books</a></li>
+	    <li><a href="badges">Badges</a></li>
+	    <li><a href="wishlist">Wishlist</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+	    <li><a href="profile">Profile</a></li>
+        <li><a href="login"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h2>Books</h2>
+  <p>This is all the books you've read</p>            
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Date read</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:if="${books.empty}">
+        <td colspan="2"> You haven't read any books, apparently. </td>
+      </tr>
+      <tr th:each="book : ${books}">
+        <td><p th:text="${book.title}"/></td>
+        <td><p th:text="${book.author}"/></td>
+        <td><p th:text="${book.dateRead}"/></td> 
+        <td hidden><p th:text="${book.genre}"/></td>
+        <td hidden><p th:text="${book.isbn}"/></td>
+        <td hidden><p th:text="${book.rating}"/></td>
+        <td hidden><p th:text="${book.review}"/></td>
+	    <td><a id="editReadBook"><span class="glyphicon glyphicon-pencil"></span></a>
+        <div class="modal fade" id="editReadBookModal" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal" action="#" th:action="@{/index}" th:object="${reviewedbookform}" method="post">
+                  <input type="hidden" th:field="*{userId}" />
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="title">Title</label>
+                    <div class="col-sm-10">
+                      <input type="text" th:field="*{title}" class="form-control" placeholder="Title" id="txttitle" maxlength="250" required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="author">Author</label>
+                    <div class="col-sm-10">
+                      <input type="text" th:field="*{author}" class="form-control" placeholder="Author" id="txtauthor" maxlength="150" required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="isbn">ISBN</label>
+                    <div class="col-sm-10">
+                      <input type="text" th:field="*{isbn}" class="form-control" placeholder="ISBN" id="txtisbn" maxlength="13" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="genre">Genre</label>
+                    <div class="col-sm-10">  
+                      <input type="text" th:field="*{genre}" class="form-control" placeholder="Genre" id="txtgenre" maxlength="100" required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="dateRead">Date read</label>
+                    <div class="col-sm-10">
+                      <input type="text" th:field="*{dateRead}" class="form-control" placeholder="Date read as YYYY/MM/DD" id="txtdateread" maxlength="10" required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="rating">Rating</label>
+                    <div class="col-sm-10">          
+                    <label class="radio-inline">
+                      <input type="radio" th:field="*{rating}" value="1" name="optradio" id="rd1">1
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" th:field="*{rating}" value="2" name="optradio" id="rd2">2
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" th:field="*{rating}" value="3" name="optradio" id="rd3">3
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" th:field="*{rating}" value="4" name="optradio" id="rd4">4
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" th:field="*{rating}" value="5" name="optradio" id="rd5">5
+                    </label>
+                  </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="review">Review</label>
+                    <div class="col-sm-10">
+                      <textarea class="form-control" th:field="*{review}" rows="10" id="txtreview" maxlength="2000" required></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+               </form>
+              </div> 
+            </div>
+          </div>
+        </td>
+        <td><a th:href="@{/deleteReviewedBook/{isbn}/{userId}(isbn=${book.isbn}, userId=${book.userId})}"><span class="glyphicon glyphicon-trash"></span></a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+<div class="container">
+  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addNewBook">Add new book</button>
+    <div class="modal fade" id="addNewBook" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Add a new book</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" action="#" th:action="@{/index}" th:object="${reviewedbookform}" method="post">
+              <input type="hidden" th:field="*{userId}" />
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="title">Title</label>
+                <div class="col-sm-10">
+                  <input type="text" th:field="*{title}" class="form-control" placeholder="Title" id="title" maxlength="250">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="author">Author</label>
+                <div class="col-sm-10">
+                  <input type="text" th:field="*{author}" class="form-control" placeholder="Author" maxlength="150">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="isbn">ISBN</label>
+                <div class="col-sm-10">
+                  <input type="text" th:field="*{isbn}" class="form-control" placeholder="ISBN" maxlength="13">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="genre">Genre</label>
+                <div class="col-sm-10">  
+                  <input type="text" th:field="*{genre}" class="form-control" placeholder="Genre" maxlength="100">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="dateRead">Date read</label>
+                <div class="col-sm-10">
+                  <input type="text" th:field="*{dateRead}" class="form-control" placeholder="Date read" maxlength="10">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="rating">Rating</label>
+                  <div class="col-sm-10">          
+                    <label class="radio-inline">
+                      <input type="radio" th:field="*{rating}" value="1" name="optradio" checked>1
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" th:field="*{rating}" value="2" name="optradio">2
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" th:field="*{rating}" value="3" name="optradio">3
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" th:field="*{rating}" value="4" name="optradio">4
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" th:field="*{rating}" value="5" name="optradio">5
+                    </label>
+                  </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="review">Review</label>
+                <div class="col-sm-10">
+                  <textarea class="form-control" th:field="*{review}" rows="5" maxlength="2000"></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="footer navbar-fixed-bottom">
+  <footer class="container-fluid text-center">
+  <p>&#169; 2018 Book Note Book</p>
+  </footer>
+</div>
+
+</body>
+</html>
+							
